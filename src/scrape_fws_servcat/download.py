@@ -44,6 +44,17 @@ def download_linked_resources(data_dir: str, data_file: str):
                         print(f"Downloaded {file_path}")
                         time.sleep(5)
                         break
+                    except requests.exceptions.HTTPError as e:
+                        if response.status_code == 403:
+                            print(f"Access forbidden for {url}. Skipping.")
+                            break
+                        else:
+                            print(f"Error downloading {url}: {e}")
+                            if attempt < retries - 1:
+                                print(f"Retrying... ({attempt + 1}/{retries})")
+                                time.sleep((attempt + 4) ** 2)
+                            else:
+                                print(f"Failed to download {url} after {retries} attempts")
                     except (IncompleteRead, requests.exceptions.RequestException) as e:
                         print(f"Error downloading {url}: {e}")
                         if attempt < retries - 1:
