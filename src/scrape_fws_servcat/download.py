@@ -1,9 +1,9 @@
 import json
 import os
 import time
-
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from http.client import IncompleteRead
 
 # Suppress only the single InsecureRequestWarning from urllib3
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -32,13 +32,25 @@ def download_linked_resources(data_dir: str, data_file: str):
             if not os.path.exists(file_path):
                 url = resource["url"].replace("http://", "https://")
                 print(f"Downloading {url} to {file_path}")
-                response = requests.get(url, timeout=60, verify=False)
-                response.raise_for_status()
-
-                with open(file_path, "wb") as f:
-                    f.write(response.content)
-                print(f"Downloaded {file_path}")
-                time.sleep(1)
+                retries = 3
+                for attempt in range(retries):
+                    try:
+                        response = requests.get(url, timeout=60, verify=False, stream=True)
+                        response.raise_for_status()
+                        with open(file_path, "wb") as f:
+                            for chunk in response.iter_content(chunk_size=8192):
+                                if chunk:
+                                    f.write(chunk)
+                        print(f"Downloaded {file_path}")
+                        time.sleep(5)
+                        break
+                    except (IncompleteRead, requests.exceptions.RequestException) as e:
+                        print(f"Error downloading {url}: {e}")
+                        if attempt < retries - 1:
+                            print(f"Retrying... ({attempt + 1}/{retries})")
+                            time.sleep((attempt + 4) ** 2)
+                        else:
+                            print(f"Failed to download {url} after {retries} attempts")
             else:
                 print(f"Skipping {file_path}")
 
