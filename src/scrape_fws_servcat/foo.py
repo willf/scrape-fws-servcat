@@ -1,6 +1,10 @@
 import json
 
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+# Suppress only the single InsecureRequestWarning from urllib3
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 def fetch_all_items(url: str, output_file: str, top: int):
