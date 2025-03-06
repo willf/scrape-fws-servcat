@@ -17,6 +17,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dependencies = [
+    "requests>=2.32.3",
+]
 
 [project.urls]
 Homepage = "https://willf.github.io/scrape-fws-servcat/"
