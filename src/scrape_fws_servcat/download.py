@@ -7,7 +7,7 @@ from http.client import IncompleteRead
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from scrape_fws_servcat.utils import bytes_to_gigabytes
+from scrape_fws_servcat.utils import bytes_to_gigabytes, is_valid_url
 
 # Suppress only the single InsecureRequestWarning from urllib3
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -31,7 +31,7 @@ def download_linked_resources(data_dir: str, data_file: str):
             sys.stdout.flush()
             print(f"Processing resource {j + 1}/{len(item['linkedResources'])}")
             resource_type = resource["resourceType"].replace(" ", "_")
-            if resource_type == "Web_Service":
+            if resource_type != "Digital_File":
                 continue
             file_name = resource["fileName"]
             file_size_value = resource.get("fileSize", 0)
@@ -47,6 +47,9 @@ def download_linked_resources(data_dir: str, data_file: str):
 
             if not os.path.exists(file_path):
                 url = resource["url"].replace("http://", "https://")
+                if not is_valid_url(url):
+                    print(f"Invalid URL: {url}")
+                    continue
                 print(f"Downloading {url} to {file_path} of size {bytes_to_gigabytes(file_size):.2f} GB")
                 sys.stdout.flush()
                 retries = 3
