@@ -3,10 +3,42 @@
 [![Build status](https://img.shields.io/github/actions/workflow/status/willf/scrape-fws-servcat/main.yml?branch=main)](https://github.com/willf/scrape-fws-servcat/actions/workflows/main.yml?query=branch%3Amain)
 [![License](https://img.shields.io/github/license/willf/scrape-fws-servcat)](https://img.shields.io/github/license/willf/scrape-fws-servcat)
 
-Access US Fish and Wildlife Serices ServCat
+Access US Fish and Wildlife Services ServCat
 
 - **Github repository**: <https://github.com/willf/scrape-fws-servcat/>
 - **Documentation** <https://willf.github.io/scrape-fws-servcat/>
+
+## Usage
+
+### Fetching Data
+
+To fetch data from the US Fish and Wildlife Services ServCat:
+
+```bash
+python -m scrape_fws_servcat.foo
+```
+
+This will fetch all the references and save them to `output.json`.
+
+### Downloading Resources
+
+To download linked resources from the references:
+
+```bash
+python -m scrape_fws_servcat.download
+```
+
+This will download all linked resources to the `data` directory.
+
+### Generating HTML Report
+
+To generate an HTML report of the references:
+
+```bash
+python -m scrape_fws_servcat.generate_html
+```
+
+This will generate a static HTML file (`references.html`) that presents the information for each reference and linked resource.
 
 ## Getting started with your project
 

@@ -9,6 +9,38 @@ def bytes_to_gigabytes(bytes_value: int) -> float:
     return bytes_value / (1024**3)
 
 
+def humanize_bytes(num_bytes: Union[int, float]) -> str:
+    """
+    Convert a number of bytes into a human-readable
+    """
+    result = humanize_bytes_0(num_bytes)
+    # 505.00 Kb -> 505 Kb
+    result = result.replace(".00", "")
+    return result
+
+
+def humanize_bytes_0(num_bytes: Union[int, float]) -> str:
+    """
+    Convert a number of bytes into a human-readable format (e.g., KB, MB, GB).
+
+    Args:
+        num_bytes: Number of bytes
+
+    Return:
+        Human-readable string
+    """
+    if num_bytes < 1024:
+        return f"{num_bytes} bytes"
+    elif num_bytes < 1024**2:
+        return f"{num_bytes / 1024:.2f} Kb"
+    elif num_bytes < 1024**3:
+        return f"{num_bytes / 1024**2:.2f} Mb"
+    elif num_bytes < 1024**4:
+        return f"{num_bytes / 1024**3:.2f} Gb"
+    else:
+        return f"{num_bytes / 1024**4:.2f} Tb"
+
+
 def get_tld(url: str) -> str:
     """
     Get the top-level domain (TLD) of a URL.
